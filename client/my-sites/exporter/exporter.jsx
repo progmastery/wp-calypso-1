@@ -6,51 +6,56 @@ import React, { PropTypes } from 'react';
 /**
  * Internal dependencies
  */
-import CompactCard from 'components/card/compact';
-import Gridicon from 'components/gridicon';
-import Button from 'components/forms/form-button';
+import FoldableCard from 'components/foldable-card';
 import AdvancedSettings from 'my-sites/exporter/advanced-settings';
+import SpinnerButton from './spinner-button';
 
 export default React.createClass( {
 	displayName: 'Exporter',
 
 	propTypes: {
+		startExport: PropTypes.func.isRequired,
+		toggleSection: PropTypes.func.isRequired,
+
+		shouldShowProgress: PropTypes.bool.isRequired,
 		advancedSettings: PropTypes.shape( {
-			isVisible: PropTypes.bool.isRequired
+			posts: PropTypes.object,
+			pages: PropTypes.object,
+			feedback: PropTypes.object
 		} )
 	},
 
 	render: function() {
 		return (
 			<div className="section-export">
-				<CompactCard>
-					<header>
-						<Button
+				<FoldableCard
+					header={
+						<div>
+							<h1 className="exporter__title">
+								{ this.translate( 'Export your content' ) }
+							</h1>
+							<h2 className="exporter__subtitle">
+								{ this.translate( 'Or select specific content items to export' ) }
+							</h2>
+						</div>
+					}
+					summary={
+						<SpinnerButton
 							className="exporter__export-button"
-							disabled={ false }
+							loading={ this.props.shouldShowProgress }
 							isPrimary={ true }
-						>
-							{ this.translate( 'Export' ) }
-						</Button>
-						<h1 className="exporter__title">
-							{ this.translate( 'Download an Export File' ) }
-						</h1>
-					</header>
-					<a href="#" onClick={ this.props.toggleAdvancedSettings }>
-						<Gridicon
-							icon={ this.props.advancedSettings.isVisible ? 'chevron-up' : 'chevron-down' }
-							size={ 16 } />
-						{ this.translate( 'Advanced Export Settings' ) }
-					</a>
-				</CompactCard>
-
-				{
-					this.props.advancedSettings.isVisible &&
+							onClick={ this.props.startExport }
+							text={ this.translate( 'Export' ) }
+							loadingText={ this.translate( 'Exporting…' ) } />
+					}
+					>
 					<AdvancedSettings
 						{ ...this.props.advancedSettings }
+						shouldShowProgress={ this.props.shouldShowProgress }
 						onToggleFieldset={ this.props.toggleSection }
+						onClickExport={ this.props.startExport }
 					/>
-				}
+				</FoldableCard>
 			</div>
 		);
 	}
