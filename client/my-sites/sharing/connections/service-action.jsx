@@ -6,7 +6,9 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var serviceConnections = require( './service-connections' );
+var serviceConnections = require( './service-connections' ),
+	Button = require( 'components/button' ),
+	RemoveButton = require( 'components/remove-button' );
 
 module.exports = React.createClass( {
 	displayName: 'SharingServiceAction',
