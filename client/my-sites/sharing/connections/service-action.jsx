@@ -48,6 +48,9 @@ module.exports = React.createClass( {
 
 		if ( 'connected' === this.props.status ) {
 			removableConnections = serviceConnections.getRemovableConnections( this.props.service.name );
+			var ActionButton = RemoveButton;
+		} else {
+			var ActionButton = Button;
 		}
 
 		if ( 'unknown' === this.props.status ) {
@@ -75,6 +78,6 @@ module.exports = React.createClass( {
 			classes.push( 'is-primary' );
 		}
 
-		return <a onClick={ this.onActionClick } className={ classes.join( ' ' ) } disabled={ isPending }>{ label }</a>;
+		return <ActionButton onClick={ this.onActionClick } className={ classes.join( ' ' ) } disabled={ isPending }>{ label }</ActionButton>;
 	}
 } );
