@@ -47,17 +47,20 @@ module.exports = React.createClass( {
 			isPending,
 			removableConnections,
 			label,
-			icon;
+			icon,
+			primary = false,
+			ActionButton;
 
 		isPending = 'unknown' === this.props.status || this.props.isDisconnecting ||
 			this.props.isRefreshing || this.props.isConnecting;
 
 		if ( 'connected' === this.props.status ) {
 			removableConnections = serviceConnections.getRemovableConnections( this.props.service.name );
-			var ActionButton = RemoveButton;
+			ActionButton = RemoveButton;
 			icon = "disconnect";
 		} else {
-			var ActionButton = Button;
+			ActionButton = Button;
+			primary = true;
 		}
 
 		if ( 'unknown' === this.props.status ) {
@@ -82,6 +85,6 @@ module.exports = React.createClass( {
 			label = this.translate( 'Connect', { context: 'Sharing: Publicize connect pending button label' }  );
 		}
 
-		return <ActionButton icon={ icon } onClick={ this.onActionClick } className={ classNames( classes ) } disabled={ isPending }>{ label }</ActionButton>;
+		return <ActionButton primary={ primary } icon={ icon } onClick={ this.onActionClick } className={ classNames( classes ) } disabled={ isPending }>{ label }</ActionButton>;
 	}
 } );

@@ -249,6 +249,11 @@ $color-print: #f8f8f8;
 			border-color: lighten( $alert-yellow, 8% ) !important;
 		}
 	}
+
+	&.is-compact{
+		top: 28px;
+	}
+
 }
 
 .sharing-service__content {
