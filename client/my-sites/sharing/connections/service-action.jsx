@@ -41,9 +41,7 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var classes = {
-				'sharing-service-action': true,
-				'button': false },
+		var classes = { 'sharing-service-action': true },
 			isPending,
 			removableConnections,
 			label,
