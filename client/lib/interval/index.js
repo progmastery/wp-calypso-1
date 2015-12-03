@@ -4,18 +4,18 @@ import React, { PropTypes } from 'react';
  * Calls a given function on a given interval
  */
 export default React.createClass( {
-	displayName: 'ActionPoller',
+	displayName: 'Interval',
 
 	propTypes: {
-		action: PropTypes.func.isRequired,
-		interval: PropTypes.number,
+		onTick: PropTypes.func.isRequired,
+		milliseconds: PropTypes.number,
 		leading: PropTypes.bool,
 		pauseWhenHidden: PropTypes.bool,
 		children: PropTypes.element
 	},
 
 	getDefaultProps: () => ( {
-		interval: 30000,
+		milliseconds: 30000,
 		leading: true,
 		pauseWhenHidden: true
 	} ),
@@ -43,14 +43,14 @@ export default React.createClass( {
 			return this.setState( { timer: null } );
 		}
 
-		this.setState( { timer: setTimeout( this.run, this.props.interval ) } );
+		this.setState( { timer: setTimeout( this.run, this.props.milliseconds ) } );
 
-		this.props.action();
+		this.props.onTick();
 	},
 
 	start() {
 		return ! this.state.timer && this.setState( {
-			timer: setTimeout( this.run, this.props.leading ? 0 : this.props.interval )
+			timer: setTimeout( this.run, this.props.leading ? 0 : this.props.milliseconds )
 		} );
 	},
 
