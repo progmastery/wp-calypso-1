@@ -41,7 +41,9 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var classes = { 'sharing-service-action': true }, isPending, removableConnections, label, icon, primary = false, ActionButton;
+		var classes = { 'sharing-service-action': true },
+			primary = false,
+			isPending, removableConnections, label, icon, ActionButton;
 
 		isPending = 'unknown' === this.props.status || this.props.isDisconnecting ||
 			this.props.isRefreshing || this.props.isConnecting;
