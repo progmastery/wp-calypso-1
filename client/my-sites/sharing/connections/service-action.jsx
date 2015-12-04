@@ -1,15 +1,15 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
-	classNames = require( 'classnames' );
+import React from 'react';
+import classNames from 'classnames';
 
 /**
  * Internal dependencies
  */
-var serviceConnections = require( './service-connections' ),
-	Button = require( 'components/button' ),
-	RemoveButton = require( 'components/remove-button' );
+import serviceConnections from './service-connections';
+import Button from 'components/button';
+import RemoveButton from 'components/remove-button';
 
 module.exports = React.createClass( {
 	displayName: 'SharingServiceAction',
