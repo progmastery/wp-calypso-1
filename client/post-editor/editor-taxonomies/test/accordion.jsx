@@ -8,7 +8,8 @@ var React = require( 'react/addons' ),
 	ReactInjection = require( 'react/lib/ReactInjection' ),
 	mockery = require( 'mockery' ),
 	expect = require( 'chai' ).expect,
-	TestUtils = React.addons.TestUtils;
+	TestUtils = React.addons.TestUtils,
+	noop = require( 'lodash/utility/noop' );
 
 /**
  * Internal dependencies
@@ -31,6 +32,9 @@ mockery.enable( {
 } );
 
 mockery.registerMock( 'components/info-popover', MOCK_COMPONENT );
+mockery.registerMock( 'component-classes', function() {
+	return { add: noop, toggle: noop, remove: noop }
+} );
 mockery.registerSubstitute( 'matches-selector', 'component-matches-selector' );
 mockery.registerSubstitute( 'query', 'component-query' );
 i18n.initialize();
