@@ -32,7 +32,8 @@ module.exports = React.createClass( {
 		secondaryActionURL: React.PropTypes.string,
 		secondaryActionCallback: React.PropTypes.func,
 		className: React.PropTypes.string,
-		isCompact: React.PropTypes.bool
+		isCompact: React.PropTypes.bool,
+		featureExample: React.PropTypes.element
 	},
 
 	componentDidMount: function() {
