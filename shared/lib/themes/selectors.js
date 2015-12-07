@@ -53,6 +53,10 @@ export function getFilteredThemes( state, search ) {
 	return filter( allThemes, theme => matches( theme, search ) );
 }
 
+export function getCurrentTheme( state, siteId ) {
+	return state.themes.currentTheme.get( 'currentThemes' ).get( siteId );
+}
+
 function matches( theme, rawSearch ) {
 	const search = rawSearch.toLowerCase().trim();
 
