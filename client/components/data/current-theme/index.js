@@ -7,7 +7,7 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var CurrentThemeStore = require( 'lib/themes/stores/current-theme' ),
-	Actions = require( 'lib/themes/flux-actions' );
+	fetchCurrentTheme = require( 'lib/themes/flux-actions' ).fetchCurrentTheme;
 
 /**
  * Fetches the currently active theme of the supplied site
@@ -33,7 +33,7 @@ var CurrentThemeData = React.createClass( {
 		CurrentThemeStore.on( 'change', this.onCurrentThemeChange );
 
 		if ( ! this.state.currentTheme && this.props.site ) {
-			Actions.fetchCurrentTheme( this.props.site );
+			fetchCurrentTheme( this.props.site );
 		}
 	},
 
@@ -43,7 +43,7 @@ var CurrentThemeData = React.createClass( {
 		}
 
 		if ( nextProps.site && nextProps.site !== this.props.site ) {
-			Actions.fetchCurrentTheme( nextProps.site );
+			fetchCurrentTheme( nextProps.site );
 		}
 	},
 
