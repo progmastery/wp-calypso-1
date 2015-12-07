@@ -41,8 +41,8 @@ var controller = {
 
 		React.render(
 			// TODO: Remove function when using React 0.14
-			React.createElement( ReduxProvider, { store: context.reduxStore }, () => {
-				return React.createElement( ThemesComponent, {
+			React.createElement( ReduxProvider, { store: context.reduxStore },
+				() => React.createElement( ThemesComponent, {
 					key: site_id,
 					siteId: site_id,
 					sites: sites,
@@ -54,8 +54,8 @@ var controller = {
 						analyticsPageTitle,
 						'Themes'
 					)
-				} );
-			} ),
+				} )
+			),
 			document.getElementById( 'primary' )
 		);
 	}
