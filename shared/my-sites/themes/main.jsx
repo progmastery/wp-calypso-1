@@ -10,7 +10,7 @@ var React = require( 'react/addons' ),
 var Main = require( 'components/main' ),
 	CurrentThemeData = require( 'components/data/current-theme' ),
 	ActivatingTheme = require( 'components/data/activating-theme' ),
-	Action = require( 'lib/themes/flux-actions' ),
+	Action = require( 'lib/themes/actions' ),
 	WebPreview = require( 'components/web-preview' ),
 	Button = require( 'components/button' ),
 	CurrentTheme = require( 'my-sites/themes/current-theme' ),
@@ -31,7 +31,8 @@ var Themes = React.createClass( {
 
 	propTypes: {
 		siteId: React.PropTypes.string,
-		sites: React.PropTypes.object.isRequired
+		sites: React.PropTypes.object.isRequired,
+		dispatch: React.PropTypes.func.isRequired,
 	},
 
 	getInitialState: function() {
@@ -67,7 +68,7 @@ var Themes = React.createClass( {
 	togglePreview: function( theme ) {
 		const site = this.props.sites.getSelectedSite();
 		if ( site.jetpack ) {
-			Action.customize( theme, site );
+			this.props.dispatch( Action.customize( theme, site ) );
 		} else {
 			const previewUrl = ThemeHelpers.getPreviewUrl( theme, site );
 			this.setState( { showPreview: ! this.state.showPreview, previewUrl: previewUrl, previewingTheme: theme } );
@@ -121,7 +122,7 @@ var Themes = React.createClass( {
 						<Button primary onClick={ this.setState.bind( this, { showPreview: false },
 							() => {
 								if ( site ) {
-									Action.customize( this.state.previewingTheme, site )
+									this.props.dispatch( Action.customize( this.state.previewingTheme, site ) );
 								} else {
 									this.setSelectedTheme( 'customize', this.state.previewingTheme );
 								}

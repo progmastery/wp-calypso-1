@@ -53,7 +53,8 @@ var controller = {
 						basePath,
 						analyticsPageTitle,
 						'Themes'
-					)
+					),
+					dispatch: context.reduxStore.dispatch
 				} )
 			),
 			document.getElementById( 'primary' )
