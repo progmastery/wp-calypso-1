@@ -8,14 +8,17 @@ var React = require( 'react/addons' );
  */
 var Dialog = require( 'components/dialog' ),
 		PulsingDot = require( 'components/pulsing-dot' ),
-		Action = require( 'lib/themes/flux-actions' ),
 		Helpers = require( 'lib/themes/helpers' );
 
 var ThanksModal = React.createClass( {
 	trackClick: Helpers.trackClick.bind( null, 'current theme' ),
 
+	propTypes: {
+		clearActivated: React.PropTypes.func.isRequired
+	},
+
 	onCloseModal: function() {
-		Action.clearActivated();
+		this.props.clearActivated();
 		this.setState( { show: false } );
 	},
 

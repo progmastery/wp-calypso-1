@@ -8,7 +8,6 @@ import page from 'page';
 /**
  * Internal dependencies
  */
-import Action from 'lib/themes/flux-actions';
 import Helper from 'lib/themes/helpers';
 import ThemesSearchCard from './themes-search-card';
 import ThemesData from 'components/data/themes-list-fetcher';
@@ -32,7 +31,8 @@ const ThemesSelection = React.createClass( {
 		search: PropTypes.string,
 		setSelectedTheme: PropTypes.func.isRequired,
 		togglePreview: PropTypes.func.isRequired,
-		getOptions: PropTypes.func.isRequired
+		getOptions: PropTypes.func.isRequired,
+		customize: PropTypes.func.isRequired
 	},
 
 	getInitialState: function() {
@@ -79,7 +79,7 @@ const ThemesSelection = React.createClass( {
 
 		Helper.trackClick( 'theme', 'screenshot' );
 		if ( theme.active && site ) {
-			Action.customize( theme, site );
+			this.props.customize( theme, site );
 		} else {
 			this.recordSearchResultsClick( theme, resultsRank );
 			this.props.togglePreview( theme );

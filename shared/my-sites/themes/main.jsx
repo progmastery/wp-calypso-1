@@ -2,6 +2,7 @@
  * External dependencies
  */
 var React = require( 'react/addons' ),
+	bindActionCreators = require( 'redux' ).bindActionCreators,
 	partialRight = require( 'lodash/function/partialRight' );
 
 /**
@@ -56,7 +57,9 @@ var Themes = React.createClass( {
 	renderThankYou: function() {
 		return (
 			<ActivatingTheme siteId={ this.props.sites.getSelectedSite().ID } >
-				<ThanksModal site={ this.props.sites.getSelectedSite() } />
+				<ThanksModal
+					site={ this.props.sites.getSelectedSite() }
+					clearActivated={ bindActionCreators( Action.clearActivated, this.props.dispatch ) } />
 			</ActivatingTheme>
 		);
 	},
@@ -139,14 +142,23 @@ var Themes = React.createClass( {
 						sites={ this.props.sites }
 						setSelectedTheme={ this.setSelectedTheme }
 						togglePreview={ this.togglePreview }
-						getOptions={ partialRight( getButtonOptions, this.setSelectedTheme, this.togglePreview ) }
+						getOptions={ partialRight( getButtonOptions, bindActionCreators( Action, this.props.dispatch ), this.setSelectedTheme, this.togglePreview, false ) }
 						trackScrollPage={ this.props.trackScrollPage }
-						tier={ this.props.tier } />
+						tier={ this.props.tier }
+						customize={ bindActionCreators( Action.customize, this.props.dispatch ) } />
 				}
 				{ this.isThemeOrActionSet() && <ThemesSiteSelectorModal selectedAction={ this.state.selectedAction }
 					selectedTheme={ this.state.selectedTheme }
 					onHide={ this.setSelectedTheme.bind( null, null, null ) }
-					getOptions={ partialRight( getButtonOptions, this.setSelectedTheme, this.togglePreview, true ) } /> }
+					actions={ bindActionCreators( Action, this.props.dispatch ) }
+					getOptions={ partialRight(
+						getButtonOptions,
+						bindActionCreators( Action, this.props.dispatch ),
+						this.setSelectedTheme,
+						this.togglePreview,
+						true
+					) }
+				/> }
 			</Main>
 		);
 	}
