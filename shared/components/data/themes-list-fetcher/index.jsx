@@ -15,7 +15,6 @@ import Constants from 'lib/themes/constants';
 import * as allActions from 'lib/themes/actions';
 import {
 	getFilteredThemes,
-	getParams,
 	hasSiteChanged,
 	isJetpack,
 	isLastPage,
