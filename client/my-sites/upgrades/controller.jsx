@@ -11,7 +11,7 @@ var analytics = require( 'analytics' ),
 	sites = require( 'lib/sites-list' )(),
 	route = require( 'lib/route' ),
 	i18n = require( 'lib/mixins/i18n' ),
-	ThemeActions = require( 'lib/themes/flux-actions' ),
+	activated = require( 'lib/themes/actions' ).activated,
 	Main = require( 'components/main' ),
 	upgradesActions = require( 'lib/upgrades/actions' ),
 	titleActions = require( 'lib/screen-title/actions' ),
@@ -245,7 +245,7 @@ module.exports = {
 
 		if ( cartItems.hasOnlyProductsOf( cart, 'premium_theme' ) ) {
 			const { meta, extra: { source } } = cartAllItems[ 0 ];
-			ThemeActions.activated( meta, selectedSite, source, true );
+			context.reduxStore.dispatch( activated( meta, selectedSite, source, true ) );
 			page.redirect( '/design/' + selectedSite.slug );
 			return;
 		}
