@@ -1,4 +1,12 @@
 import React, { PropTypes } from 'react';
+import {
+	add, remove,
+	EVERY_SECOND,
+	EVERY_FIVE_SECONDS,
+	EVERY_TEN_SECONDS,
+	EVERY_THIRTY_SECONDS,
+	EVERY_MINUTE
+} from './runner';
 
 /**
  * Calls a given function on a given interval
@@ -8,54 +16,70 @@ export default React.createClass( {
 
 	propTypes: {
 		onTick: PropTypes.func.isRequired,
-		milliseconds: PropTypes.number,
-		leading: PropTypes.bool,
+		period: PropTypes.oneOf( [
+			EVERY_SECOND,
+			EVERY_FIVE_SECONDS,
+			EVERY_TEN_SECONDS,
+			EVERY_THIRTY_SECONDS,
+			EVERY_MINUTE
+		] ).isRequired,
 		pauseWhenHidden: PropTypes.bool,
 		children: PropTypes.element
 	},
 
 	getDefaultProps: () => ( {
-		milliseconds: 30000,
-		leading: true,
 		pauseWhenHidden: true
 	} ),
 
 	getInitialState: () => ( {
-		timer: null
+		id: null
 	} ),
 
 	componentDidMount() {
-		this.start()
+		this.start();
+
+		document.addEventListener( 'visibilitychange', this.handleVisibilityChange, false );
 	},
 
 	componentWillUnmount() {
-		this.stop()
+		document.removeEventListener( 'visibilitychange', this.handleVisibilityChange, false );
+
+		this.stop();
 	},
 
-	componentDidUpdate() {
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.period === this.props.period && prevProps.onTick === this.props.onTick ) {
+			return;
+		}
+
 		this.start();
 	},
 
-	run() {
-		clearTimeout( this.state.timer );
+	handleVisibilityChange() {
+		const { id } = this.state;
+		const { pauseWhenHidden } = this.props;
 
-		if ( document.hidden && this.props.pauseWhenHidden ) {
-			return this.setState( { timer: null } );
+		if ( document.hidden && id && pauseWhenHidden ) {
+			return this.stop();
 		}
 
-		this.setState( { timer: setTimeout( this.run, this.props.milliseconds ) } );
-
-		this.props.onTick();
+		if ( ! document.hidden && ! id && pauseWhenHidden ) {
+			this.start();
+		}
 	},
 
 	start() {
-		return ! this.state.timer && this.setState( {
-			timer: setTimeout( this.run, this.props.leading ? 0 : this.props.milliseconds )
-		} );
+		const { period, onTick } = this.props;
+
+		if ( this.state.id ) {
+			remove( this.state.id );
+		}
+		this.setState( { id: add( period, onTick ) } );
 	},
 
 	stop() {
-		this.setState( { timer: clearTimeout( this.state.timer ) } );
+		remove( this.state.id );
+		this.setState( { id: null } );
 	},
 
 	render() {
