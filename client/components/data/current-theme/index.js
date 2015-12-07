@@ -29,7 +29,7 @@ var CurrentThemeData = React.createClass( {
 		};
 	},
 
-	componentWillMount: function() {
+	componentDidMount: function() {
 		CurrentThemeStore.on( 'change', this.onCurrentThemeChange );
 
 		if ( ! this.state.currentTheme && this.props.site ) {
