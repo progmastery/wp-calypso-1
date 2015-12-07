@@ -7,8 +7,8 @@ var React = require( 'react/addons' );
  * Internal dependencies
  */
 var Dialog = require( 'components/dialog' ),
-		PulsingDot = require( 'components/pulsing-dot' ),
-		Helpers = require( 'lib/themes/helpers' );
+	PulsingDot = require( 'components/pulsing-dot' ),
+	Helpers = require( 'lib/themes/helpers' );
 
 var ThanksModal = React.createClass( {
 	trackClick: Helpers.trackClick.bind( null, 'current theme' ),
