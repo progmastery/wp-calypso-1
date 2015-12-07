@@ -2,7 +2,6 @@
  * External dependencies
  */
 import filter from 'lodash/collection/filter';
-import pluck from 'lodash/collection/pluck';
 
 // TODO: DRY, reuse these selectors in ./stores
 export function isJetpack( state ) {
