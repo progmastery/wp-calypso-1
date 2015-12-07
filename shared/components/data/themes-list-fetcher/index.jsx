@@ -135,7 +135,7 @@ const ThemesListFetcher = React.createClass( {
 
 } );
 
-module.exports = connect(
+export default connect(
 	( state, props ) => Object.assign( {},
 		props,
 		getThemesState( state, props )
