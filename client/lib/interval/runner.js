@@ -78,7 +78,11 @@ function hasPeriodActions( period ) {
 function executePeriodActions( period ) {
 	getPeriodActions( period )
 		.forEach( a => {
-			a.get( 'onTick' ).call()
+			a.get( 'onTick' ).call();
+
+			// we have to return a truthy value
+			// or immutable.js will stop iterating
+			return true;
 		} );
 	state = state.setIn( [ 'periodTimers', period ], null );
 
