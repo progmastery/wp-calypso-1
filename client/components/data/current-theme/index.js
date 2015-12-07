@@ -32,23 +32,23 @@ var CurrentThemeData = React.createClass( {
 	componentDidMount: function() {
 		CurrentThemeStore.on( 'change', this.onCurrentThemeChange );
 
-		if ( ! this.state.currentTheme && this.props.site ) {
-			fetchCurrentTheme( this.props.site );
-		}
+		this.refresh( this.props );
 	},
 
 	componentWillReceiveProps: function( nextProps ) {
-		if ( this.state.currentTheme ) {
-			return;
-		}
-
 		if ( nextProps.site && nextProps.site !== this.props.site ) {
-			fetchCurrentTheme( nextProps.site );
+			this.refresh( nextProps );
 		}
 	},
 
 	componentWillUnmount: function() {
 		CurrentThemeStore.off( 'change', this.onCurrentThemeChange );
+	},
+
+	refresh: function( props ) {
+		if ( ! this.state.currentTheme && props.site ) {
+			fetchCurrentTheme( props.site );
+		}
 	},
 
 	onCurrentThemeChange: function() {
