@@ -97,7 +97,3 @@ export const reducer = ( state = initialState, payload ) => {
 
 	return state;
 };
-
-export function getQueryParams( state ) {
-	return state.get( 'query' ).toObject();
-}

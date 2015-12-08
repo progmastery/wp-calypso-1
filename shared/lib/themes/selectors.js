@@ -42,6 +42,10 @@ export function getThemesList( state ) {
 	return state.themes.themesList.get( 'list' );
 }
 
+export function getQueryParams( state ) {
+	return state.themes.themesList.get( 'query' ).toObject();
+}
+
 export function getFilteredThemes( state, search ) {
 	const allThemes = getThemesList( state )
 		.map( getThemeById.bind( null, state ) );

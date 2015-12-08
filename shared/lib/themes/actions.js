@@ -13,12 +13,12 @@ import ThemeConstants from 'lib/themes/constants';
 import ThemeHelpers from './helpers';
 import { getCurrentTheme } from './reducers/current-theme';
 import { getThemeById } from './reducers/themes';
-import { getQueryParams } from './reducers/themes-list';
+import { getQueryParams } from './selectors';
 import wpcom from 'lib/wp';
 
 export function fetchThemes( site ) {
 	return ( dispatch, getState ) => {
-		const queryParams = getQueryParams( getState().themes.themesList );
+		const queryParams = getQueryParams( getState() );
 		const startTime = new Date().getTime();
 		const callback = ( error, data ) => {
 			debug( 'Received themes data', data );
