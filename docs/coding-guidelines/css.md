@@ -278,3 +278,93 @@ selector {
 }
 ```
 - DO [remove trailing whitespace](trailing-whitespace.md)
+
+### Z-Index
+
+When adding z-indexes use our scss z-index function. This means you'll need to add
+another entry to the `$z-layers` variable in `assets/stylesheets/shared/functions/_z-index.scss`
+
+Because browsers support a hierarchy of stacking contexts rather than a single global one, we use two keys:
+the name of the parent stacking context, and a unique name for the stacking context you've just created.
+We do this so we can quickly compare z-index values within a given stacking context. 
+
+A stacking context is created when:
+
+    1. It's the root element (HTML)
+    2. Has a position other than static, with a z-index value
+    3. position:fixed
+    4. Has one of the following css properties: (transform, opacity<1, mix-blend-mode, filter, isolation)
+    5: Or, -webkit-overflow-scrolling: touch
+
+As a very simple example, imagine that we have a page with the following markup:
+
+```html
+<div class="masterbar"></div>
+<div class="modal">
+  <div class="icon"></div>
+  <div class="content"></div>
+  <div class="header"></div>
+</div>
+```
+With css of:
+```css
+div { 
+    position: relative; 
+}
+.masterbar {
+    z-index:2;
+}
+.modal {
+    z-index: 1;
+}
+.modal__icon {
+    z-index: 100;
+}
+.modal__content {
+   z-index: 300;
+}
+.modal__header {
+   z-index: 200;
+}
+
+```
+
+Each div in this case creates a stacking context, with the render order summarized as:
+
+```
+1.0 .modal
+1.100 .modal__icon
+1.200 .modal__header
+1.300 .modal__content
+2.0 .masterbar
+```
+
+In this case icon, header, and content can never be rendered above the masterbar because it is
+contained within the modal stacking context, which has a lower value than masterbar.
+
+With this in mind our $z-layers might look like the following, with z-index values sorted from 
+lowest to highest within a stacking context:
+
+```scss
+$z-layers: (
+    'root': (
+        'modal': 1,
+        'masterbar': 2
+    ),
+    'modal': (
+        'icon': 100,
+        'header': 200,
+        'content': 300
+    )
+);
+```
+
+```scss
+.modal__icon {
+    z-index: z-index( 'modal', 'icon' ); // returns 100
+}
+```
+
+For further reading on stacking contexts see: 
+- [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
+- [Appendix E. Elaborate description of Stacking Contexts](http://www.w3.org/TR/CSS2/zindex.html)

@@ -1,0 +1,272 @@
+// ==========================================================================
+// A nested map of all of our z-index values.
+//
+// Please add new values relative to their specified stacking context. For
+// example the values of 'root' are elements with a stacking context that have no
+// parents with a stacking context, other than the default html root.
+//
+// A Stacking Context is created when:
+// 1. It's the root element (HTML)
+// 2. Has a position other than static, with a z-index value
+// 3. position:fixed
+// 4. Has one of the following css properties: (transform, opacity<1, mix-blend-mode, filter, isolation)
+// 5: Or, -webkit-overflow-scrolling: touch
+//
+// For readability please sort values from lowest to highest.
+//
+// Usage:
+// .environment-badge {
+//     z-index: z-index( 'root' 'environment-badge' );
+// }
+//
+// For a refresher on stacking contexts see:
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+// ==========================================================================
+
+$z-layers: (
+	'root': (
+		'infinite-scroll-end__before': -1,
+		'chart__bar-section__is-spacer': 0,
+		'chart__empty': 1,
+		'chart__bar-marker': 1,
+		'chart__bar-section__is-ghost__after': 1,
+		'billing-history__filter-popover-content': 1,
+		'chart__bar-section': 2,
+		'site-selector': 10,
+		'sticky-panel': 20,
+		'main': 20, //TODO: this is not a stacking context
+		//'tinymce-toolbar': 20, client/components/tinymce/index.jsx
+		'translator-launcher': 99,
+		'editor-visibility__popover': 179,
+		'notices-list__is-pinned': 180,
+		'masterbar': 180,
+		'detail-page__backdrop': 190,
+		'layout__loader': 200,
+		'reader-post-images__full-list': 200,
+		'environment-badge': 999,
+		'customizer-loading-panel__muse-status': 999,
+		'customizer-loading-panel__placeholder-change-theme': 999,
+		'popover': 1000, //inserted at bottom of body
+		'sortable-list__item__draggable-active': 1000,
+		'chart-tooltip': 1000,
+		'wp-overlay': 9999,
+		'main-customize__is-iframe': 9999,
+		'dss-screenshot__is-loading': 10000,
+		'distraction-free-overlay': 100005,
+		'tinymce-buttons': 100020,
+		'wp-fullscreen': 100010,
+		'wp-fullscreen-wrap': 100015,
+		'wp-fullscreen-statusbar': 100020,
+		'fullscreen-topbar': 100020,
+		'wp-fullscreen-active__tb-overlay': 100050,
+		'wp-fullscreen-active__tb-window': 100051,
+		'tinymce-toolbar-group': 100100,
+		'dialog-backdrop': 100200,
+		'wplink-dialog-card': 100200,
+		'web-preview': 100200,
+		'popover-category-selector__add-category-info': 100201,
+		'popover__is-dialog-visible': 100300,
+		'translator-webui-popover': 100300,
+		'distraction-free-fader': 200000,
+		'olark': 99999999
+	),
+	'environment-badge': (
+		'before': -1,
+		'bug-report': 1000
+	),
+	'masterbar': (
+		'notification-bubble': 99999
+	),
+	'detail-page__backdrop': (
+		'action-buttons': 200
+	),
+
+	//relative (may be inserted into different contexts)
+	'icon-parent': (
+		'external': 1
+	),
+
+	//TODO: double check parent contexts on the following:
+
+	// found on menus/<site>
+	'menus': (
+		'is-lander': 1,
+		'menu-item': 2,
+		'before': 2
+	),
+	'nux-content': (
+		'before': -1
+	),
+	'toolbar-bulk': (
+		'check-all': 1,
+		'selection-options': 1,
+		'more-actions': 1,
+		'base': 2,
+		'toggle-plugins': 21,
+		'toggle': 30
+	),
+	'sharing-buttons': (
+		'more': 1000
+	),
+	'stats': (
+		'popular-empty': 1,
+		'module-content-table-after': 1,
+		'module-header-action-link': 2,
+		'module-content-table-first-th': 2,
+		'is-loading-after': 2
+	),
+	'stats-list': (
+		'actions': 2,
+		'collapsed': 3
+	),
+	'updated-confirmation-parent': (
+		'updated-confirmation': 2
+	),
+	'dropdown': (
+		'dropdown-menu': 9999,
+		'gear-dropdown': 0
+	),
+	'screen-reader-text': (
+		'focus': 100000
+	),
+	'auth': (
+		'input': 1,
+		'input-focus': 2,
+		'gridicon': 3,
+		'password-toggle-visibility': 4
+	),
+	'author-selector': (
+		'popover': 100
+	),
+	'button-group': (
+		'focus': 1
+	),
+	'drop-zone': (
+		'base': 1000,
+		'content': 1010
+	),
+	'range': (
+		'label': 10
+	),
+	'input-chrono': (
+		'calendar': 0,
+		'input': 1
+	),
+	'plan': (
+		'gridicons-checkmark-circle': 1,
+		'discount-message': 1
+	),
+	'popover': (
+		'tip-arrow': 1
+	),
+	'post-schedule': (
+		'header': 1
+	),
+	'progress-indicator': (
+		'x-icon': 1,
+		'complete': 2
+	),
+	'search': (
+		'input': 10,
+		'spinner': 20,
+		'noticon-search': 20,
+		'noticon-close-alt': 20,
+		'base': 22,
+		'pinned': 170
+	),
+	'section-nav': (
+		'tabs-dropdown': 3,
+		'tabs-dropdown-open': 4
+	),
+	'select-dropdown': (
+		'is-open': 170, //fyi this is _not_ in the top stacking context
+		'accessible-focus': 170
+	),
+	'site-icon': (
+		'blank-noticon': 0
+	),
+	'tinymce': (
+		'wp-editor-tools': 1
+	),
+	'translator-invitation': (
+		'before': -1
+	),
+	'profile-gravatar': (
+		'after': 0,
+		'edit-label': 1000
+	),
+	'media-library': (
+		'is-selected-after': 10,
+		'transient-after': 10,
+		'selected-icon': 20,
+		'spinner': 20,
+		'edit': 20
+	),
+	'people-list-item': (
+		'label': 1,
+		'card-link-indicator': 2
+	),
+	'plugin-item': (
+		'label': 1
+	),
+	'post-trends': (
+		'title': 1
+	),
+	'site-indicator': (
+		'button': 3
+	),
+	'nux': (
+		'module-overlay': 1000
+	),
+	'editor': (
+		'switch-mode': 1,
+		'featured-image-after': 10,
+		'drawer-well-remove': 20,
+		'sticky-panel-content': 180
+	),
+	'editor-media-modal': (
+		'section-nav': 10,
+		'notice': 10,
+		'preview-toggle': 100
+	),
+	'following-edit': (
+		'sort-controls': 30,
+		'is-search-result': 35,
+		'gridicons-add-outline': 40
+	),
+	'following-stream': (
+		'follow-button': 1
+	),
+	'list-gap': (
+		'button': 1
+	),
+	'site-stream': (
+		'featured-post-title': 1
+	),
+	'update-notice': (
+		'reader-update-notice': 2
+	),
+	'processing-screen': (
+		'is-processing-before': 1
+	),
+	'theme': (
+		'is-actionable': 1,
+		'accessible-focus': 1
+	)
+);
+
+// allows us to do a nested fetch
+@function map-deep-get( $map, $keys... ) {
+	@each $key in $keys {
+		@if not map-has-key( $map, $key) {
+			@warn "No layer found for `#{$key}` of `[#{ $keys }]` in $z-layers map. Property omitted.";
+			@return map-get( $map, $key );
+		}
+		$map: map-get( $map, $key );
+	}
+	@return $map;
+}
+
+@function z-index( $keys... ) {
+	@return map-deep-get( $z-layers, $keys... );
+}
