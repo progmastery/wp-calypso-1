@@ -18,16 +18,6 @@ export const initialState = fromJS( {
 export const reducer = ( state = initialState, payload ) => {
 	const { action = payload } = payload;
 
-	// FIXME To fully convert this store to a reducer, we need to remove
-	// dependency on the dispatcher (and, by extension, other stores). Will
-	// probably be easier to do down the road when we have better
-	// infrastructure to accommodate reducers?
-	const Dispatcher = require( 'dispatcher' );
-	const ThemesListStore = require( '../stores/themes-list' );
-	if ( Dispatcher._isDispatching ) {
-		Dispatcher.waitFor( [ ThemesListStore.dispatchToken ] );
-	}
-
 	switch ( action.type ) {
 		case ThemeConstants.QUERY_THEMES:
 			return state.set( 'lastParams', action.params );
