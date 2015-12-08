@@ -11,6 +11,7 @@ var React = require( 'react' ),
 	page = require( 'page' ),
 	url = require( 'url' ),
 	qs = require( 'querystring' ),
+	ReduxProvider = require( 'react-redux' ).Provider,
 	injectTapEventPlugin = require( 'react-tap-event-plugin' );
 
 /**
@@ -80,9 +81,7 @@ function init() {
 	} );
 }
 
-function setUpContext( layout ) {
-	var reduxStore = createReduxStore();
-
+function setUpContext( layout, reduxStore ) {
 	// Pass the layout so that it is available to all page handlers
 	// and add query and hash objects onto context object
 	page( '*', function( context, next ) {
@@ -140,7 +139,7 @@ function loadDevModulesAndBoot() {
 }
 
 function boot() {
-	var layoutSection, layout, validSections = [];
+	var layoutSection, layout, reduxStore, validSections = [];
 
 	init();
 
@@ -155,6 +154,7 @@ function boot() {
 	} );
 
 	translatorJumpstart.init();
+	reduxStore = createReduxStore();
 
 	if ( user.get() ) {
 		// When logged in the analytics module requires user and superProps objects
@@ -163,13 +163,17 @@ function boot() {
 
 		// Create layout instance with current user prop
 		Layout = require( 'layout' );
-		layout = React.render( React.createElement( Layout, {
-			user: user,
-			sites: sites,
-			focus: layoutFocus,
-			nuxWelcome: nuxWelcome,
-			translatorInvitation: translatorInvitation
-		} ), document.getElementById( 'wpcom' ) );
+		layout = React.render(
+			React.createElement( ReduxProvider, { store: reduxStore }, () => {
+				return React.createElement( Layout, {
+					user: user,
+					sites: sites,
+					focus: layoutFocus,
+					nuxWelcome: nuxWelcome,
+					translatorInvitation: translatorInvitation
+				} )
+			}
+		), document.getElementById( 'wpcom' ) );
 	} else {
 		analytics.setSuperProps( superProps );
 
@@ -180,7 +184,9 @@ function boot() {
 		}
 
 		layout = React.render(
-			React.createElement( LoggedOutLayout ),
+			React.createElement( ReduxProvider, { store: reduxStore }, () => {
+				return React.createElement( LoggedOutLayout )
+			} ),
 			document.getElementById( 'wpcom' )
 		);
 	}
@@ -195,7 +201,7 @@ function boot() {
 		window.history.replaceState( null, document.title, window.location.pathname );
 	}
 
-	setUpContext( layout );
+	setUpContext( layout, reduxStore );
 
 	page( '*', require( 'lib/route/normalize' ) );
 
