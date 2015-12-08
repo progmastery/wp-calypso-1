@@ -17,6 +17,10 @@ describe( 'CurrentThemeStore', function() {
 
 	let store;
 
+	function getCurrentTheme( siteId ) {
+		return store.getState().get( 'currentThemes' ).get( siteId );
+	}
+
 	beforeEach( function() {
 		store = createStore( reducer );
 	} );
@@ -27,7 +31,7 @@ describe( 'CurrentThemeStore', function() {
 		} );
 
 		it( 'returns the current theme for the supplied site id', function() {
-			const currentTheme = store.getState().get( 'currentThemes' ).get( SITE.ID );
+			const currentTheme = getCurrentTheme( SITE.ID );
 
 			expect( currentTheme.id ).to.equal( 'twentyfifteen' );
 			expect( currentTheme.name ).to.equal( 'Twenty Fifteen' );
