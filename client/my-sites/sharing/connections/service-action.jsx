@@ -55,6 +55,7 @@ module.exports = React.createClass( {
 			ActionButton = Button;
 			icon = "link-break";
 			borderless = true;
+
 		} else {
 			ActionButton = Button;
 			primary = true;
