@@ -23,7 +23,6 @@ const increment = a => a + 1;
 const push = item => list => list.push( item );
 const pull = id => list => list.filterNot( o => o.get( 'id' ) === id );
 
-export const getForTesting = () => state;
 export const resetForTesting = () => {
 	state
 		.get( 'periodTimers' )

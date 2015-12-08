@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 
 import {
 	add, remove,
-	getForTesting as get,
 	resetForTesting as reset,
 	EVERY_SECOND,
 	EVERY_FIVE_SECONDS,
@@ -12,7 +11,8 @@ import {
 	EVERY_MINUTE
 } from '../runner';
 
-const getSentinel = value => () => value;
+const noop = () => null;
+const nudgeObject = ( o, value ) => () => ( o.counter += value );
 
 describe( 'Interval Runner', function() {
 	before( function() {
@@ -29,109 +29,123 @@ describe( 'Interval Runner', function() {
 
 	describe( 'Adding actions', function() {
 		it( 'Should return the appropriate id', function() {
-			const id = add( EVERY_SECOND, getSentinel( 42 ) );
+			const o = { counter: 0 };
+			const id = add( EVERY_SECOND, nudgeObject( o, 42 ) );
 
 			assert( 1 === id );
+			assert( 0 === o.counter );
 
-			assert( 42 === get().get( 'actions' ).find( a => a.get( 'id' ) === id ).get( 'onTick' ).call() );
+			this.clock.tick( 1000 );
+			assert( 42 === o.counter );
 		} );
 
 		it( 'Should increment the next id after adding an action', function() {
-			[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach( i => add( EVERY_SECOND, getSentinel( i ) ) );
+			[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach( i => add( EVERY_SECOND, noop ) );
 
-			assert( 10 === get().get( 'nextId' ) );
+			assert( 10 === add( EVERY_FIVE_SECONDS, noop ) );
 		} );
 
 		it( 'Should add an action to the proper slot', function() {
-			add( EVERY_TEN_SECONDS, getSentinel( 42 ) );
+			const o = { counter: 0 };
+			add( EVERY_TEN_SECONDS, nudgeObject( o, 42 ) );
 
-			assert( 42 === get().get( 'actions' ).find( a => a.get( 'period' ) === EVERY_TEN_SECONDS ).get( 'onTick' ).call() );
+			// plus 1 second
+			this.clock.tick( 1000 );
+			assert( 0 === o.counter );
+
+			// plus 5 seconds
+			this.clock.tick( 1000 * 4 );
+			assert( 0 === o.counter );
+
+			// plus 10 seconds
+			this.clock.tick( 1000 * 5 );
+			assert( 42 === o.counter );
 		} );
 
 		it( 'Should add two actions of the same interval to the same slot', function() {
-			add( EVERY_TEN_SECONDS, getSentinel( 10 ) );
-			add( EVERY_FIVE_SECONDS, getSentinel( 5 ) );
-			add( EVERY_TEN_SECONDS, getSentinel( 1010 ) );
+			const o = { counter: 0 };
 
-			const tenSecondActions = get().get( 'actions' ).filter( a => a.get( 'period' ) === EVERY_TEN_SECONDS );
+			add( EVERY_TEN_SECONDS, nudgeObject( o, 3 ) );
+			add( EVERY_FIVE_SECONDS, nudgeObject( o, 5 ) );
+			add( EVERY_TEN_SECONDS, nudgeObject( o, 7 ) );
 
-			assert( 2 === tenSecondActions.size );
-			assert( 10 === tenSecondActions.first().get( 'onTick' ).call() );
-			assert( 1010 === tenSecondActions.last().get( 'onTick' ).call() );
+			assert( 0 === o.counter );
+
+			// plus 5 seconds
+			this.clock.tick( 1000 * 5 );
+			assert( 5 === o.counter );
+
+			// plus 10 seconds
+			this.clock.tick( 1000 * 5 );
+			assert( 5 + 5 + 3 + 7 === o.counter );
 		} );
 	} );
 
 	describe( 'Removing actions', function() {
-		beforeEach( function() {
-			[ EVERY_SECOND, EVERY_FIVE_SECONDS, EVERY_TEN_SECONDS, EVERY_THIRTY_SECONDS, EVERY_MINUTE ].forEach( p => add( p, getSentinel( p ) ) );
-		} );
-
 		it( 'Should remove an action by id', function() {
-			remove( 1 );
+			const o = { counter: 0 };
+			const id = add( EVERY_SECOND, nudgeObject( o, 42 ) );
 
-			assert( get().get( 'actions' ).filter( a => a.get( 'period' ) === EVERY_SECOND ).isEmpty() );
+			this.clock.tick( 1000 );
+			assert( 42 === o.counter );
+
+			remove( id );
+			this.clock.tick( 1000 );
+			assert( 42 === o.counter );
 		} );
 
 		it( 'Should not decrement the next id after removing an action', function() {
-			const prevNextId = get().get( 'nextId' );
+			add( EVERY_SECOND, noop );
+			add( EVERY_FIVE_SECONDS, noop );
 
-			remove( 1 );
+			const id = add( EVERY_TEN_SECONDS, noop );
+			remove( id );
 
-			assert( prevNextId === get().get( 'nextId' ) );
+			assert( 4 === add( EVERY_THIRTY_SECONDS, noop ) );
 		} );
 	} );
 
 	describe( 'Running actions', function() {
 		it( 'Should run all actions for a given period when called', function() {
-			let value = 5;
-			const modifyValue = () => {
-				value = value * 2;
-			};
+			const o = { counter: 0 };
 
-			add( EVERY_SECOND, modifyValue );
-			add( EVERY_SECOND, modifyValue );
+			add( EVERY_SECOND, nudgeObject( o, 3 ) );
+			add( EVERY_SECOND, nudgeObject( o, 5 ) );
 
 			this.clock.tick( 1000 );
 
-			assert( 20 === value );
+			assert( 3 + 5 === o.counter );
 		} );
 
 		it( 'Should only execute actions for the given period', function() {
-			let value = 5;
-			const modifyValue = () => {
-				value = value * 2;
-			};
+			const o = { counter: 0 };
 
-			add( EVERY_SECOND, modifyValue );
-			add( EVERY_MINUTE, modifyValue );
+			add( EVERY_SECOND, nudgeObject( o, 3 ) );
+			add( EVERY_MINUTE, nudgeObject( o, 5 ) );
 
+			// plus 1 second
 			this.clock.tick( 1000 );
+			assert( 3 === o.counter );
 
-			assert( 10 === value );
-
-			this.clock.tick( 1000 * 60 );
-
-			// The every-second value should double sixty times,
-			// then the every-minute value should double
-			assert( 10 * Math.pow( 2, 60 ) * 2 === value );
+			// plus 1 minute
+			this.clock.tick( 1000 * 59 );
+			assert( 3 * 60 + 5 === o.counter );
 		} );
 
 		it( 'Should only execute actions that remain after removal', function() {
-			let value = 5;
-			const addToValue = v => () => {
-				value = value + v;
-			};
+			const o = { counter: 0 };
 
-			const id = add( EVERY_SECOND, addToValue( 5 ) );
-			this.clock.tick( 1000 );
-			assert( 10 === value );
+			const id = add( EVERY_SECOND, nudgeObject( o, 3 ) );
 
 			this.clock.tick( 1000 );
-			assert( 15 === value );
+			assert( 3 === o.counter );
+
+			this.clock.tick( 1000 );
+			assert( 6 === o.counter );
 
 			remove( id );
 			this.clock.tick( 1000 );
-			assert( 15 === value );
+			assert( 6 === o.counter );
 		} );
 	} );
 } );
