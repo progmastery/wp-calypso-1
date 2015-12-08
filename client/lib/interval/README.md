@@ -14,6 +14,8 @@ It only requires two inputs: an action to perform and an interval between which 
 
 The action will only be executed as long as the React component is mounted, as the component un-registers the action on unmount. Additionally, the default behavior is to stop executing the action when the browser document is hidden, though this can be overwritten.
 
+Wrapped components will be transferred all additional props not consumed by the `<Interval />` itself.
+
 ## Usage
 
 ```jsx
@@ -21,9 +23,16 @@ import Interval, { EVERY_FIVE_SECONDS, EVERY_MINUTE } from 'lib/interval';
 
 <Interval onTick={ doSomething } period={ EVERY_FIVE_SECONDS } />
 
-// Wrapping more components
+// Wrapping a component
 <Interval onTick={ fetchNewReaderPosts } period={ EVERY_MINUTE }>
 	<Reader {...readerProps} />
+</Interval>
+
+// Wrapping passes down props
+const CounterDisplay = counter => <div>{ counter }</div>;
+
+<Interval onTick={ updateCounter } period={ EVERY_MINUTE } counter={ counter }>
+	<CounterDisplay />
 </Interval>
 ```
 

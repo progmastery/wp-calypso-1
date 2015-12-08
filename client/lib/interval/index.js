@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
-import {
-	add, remove,
-	EVERY_SECOND,
-	EVERY_FIVE_SECONDS,
-	EVERY_TEN_SECONDS,
-	EVERY_THIRTY_SECONDS,
-	EVERY_MINUTE
-} from './runner';
+import omit from 'lodash/object/omit';
+
+import { add, remove } from './runner';
+
+export const EVERY_SECOND = 1000;
+export const EVERY_FIVE_SECONDS = 5 * 1000;
+export const EVERY_TEN_SECONDS = 10 * 1000;
+export const EVERY_THIRTY_SECONDS = 30 * 1000;
+export const EVERY_MINUTE = 60 * 1000;
 
 /**
  * Calls a given function on a given interval
@@ -28,7 +29,8 @@ export default React.createClass( {
 	},
 
 	getDefaultProps: () => ( {
-		pauseWhenHidden: true
+		pauseWhenHidden: true,
+		children: <span />
 	} ),
 
 	getInitialState: () => ( {
@@ -83,6 +85,6 @@ export default React.createClass( {
 	},
 
 	render() {
-		return this.props.children;
+		return React.cloneElement( this.props.children, omit( this.props, [ 'onTick', 'period', 'pauseWhenHidden', 'children' ] ) );
 	}
 } );
