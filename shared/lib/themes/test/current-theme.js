@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import ThemeConstants from '../constants';
 import { reducer } from '../reducers/current-theme';
 
-describe( 'CurrentThemeStore', function() {
+describe( 'current-theme', () => {
 	const SITE = { ID: 77203074 }; // dummy id
 
 	const actionReceiveCurrentTheme = {
@@ -21,16 +21,16 @@ describe( 'CurrentThemeStore', function() {
 		return store.getState().get( 'currentThemes' ).get( siteId );
 	}
 
-	beforeEach( function() {
+	beforeEach( () => {
 		store = createStore( reducer );
 	} );
 
-	describe( 'get()', function() {
-		beforeEach( function() {
+	describe( 'get()', () => {
+		beforeEach( () => {
 			store.dispatch( actionReceiveCurrentTheme );
 		} );
 
-		it( 'returns the current theme for the supplied site id', function() {
+		it( 'returns the current theme for the supplied site id', () => {
 			const currentTheme = getCurrentTheme( SITE.ID );
 
 			expect( currentTheme.id ).to.equal( 'twentyfifteen' );
