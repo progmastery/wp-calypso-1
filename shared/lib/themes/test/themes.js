@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import ThemeConstants from '../constants';
 import { reducer } from '../reducers/themes';
 
-describe( 'ThemesStore', function() {
+describe( 'themes', () => {
 	const actionReceiveThemes = {
 		type: ThemeConstants.RECEIVE_THEMES,
 		themes: [
@@ -32,39 +32,39 @@ describe( 'ThemesStore', function() {
 		return theme ? theme.toJS() : undefined;
 	}
 
-	beforeEach( function() {
+	beforeEach( () => {
 		store = createStore( reducer );
 	} );
 
-	describe( 'get()', function() {
-		beforeEach( function() {
+	describe( 'get()', () => {
+		beforeEach( () => {
 			store.dispatch( actionReceiveThemes );
 		} );
 
-		it( 'returns all themes', function() {
+		it( 'returns all themes', () => {
 			const themes = store.getState().get( 'themes' );
 			assert( themes.size === 2, 'Wrong number of themes' );
 		} );
 	} );
 
-	context( 'when THEMES_RECEIVE is received', function() {
-		beforeEach( function() {
+	context( 'when THEMES_RECEIVE is received', () => {
+		beforeEach( () => {
 			store.dispatch( actionReceiveThemes );
 		} );
 
-		it( 'removes duplicates', function() {
+		it( 'removes duplicates', () => {
 			store.dispatch( actionReceiveMoreThemes );
 			const themes = store.getState().get( 'themes' );
 			assert( themes.size === 3, 'duplicates found' );
 		} );
 	} );
 
-	context( 'when ACTIVATED_THEME is received', function() {
-		beforeEach( function() {
+	context( 'when ACTIVATED_THEME is received', () => {
+		beforeEach( () => {
 			store.dispatch( actionReceiveThemes );
 		} );
 
-		it( 'clears previous active flag', function() {
+		it( 'clears previous active flag', () => {
 			assert.ok( getThemeById( 'bold-news' ).active, 'initial theme not active' );
 			store.dispatch( actionThemeActivated );
 			assert.notOk( getThemeById( 'bold-news' ).active, 'initial theme still active' );
