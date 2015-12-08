@@ -9,7 +9,7 @@ import classNames from 'classnames';
  */
 import serviceConnections from './service-connections';
 import Button from 'components/button';
-import RemoveButton from 'components/remove-button';
+import Gridicon from 'components/gridicon';
 
 module.exports = React.createClass( {
 	displayName: 'SharingServiceAction',
@@ -43,15 +43,18 @@ module.exports = React.createClass( {
 	render: function() {
 		var classes = { 'sharing-service-action': true },
 			primary = false,
-			isPending, removableConnections, label, icon, ActionButton;
+			icon = false,
+			borderless = false,
+			isPending, removableConnections, label, ActionButton;
 
 		isPending = 'unknown' === this.props.status || this.props.isDisconnecting ||
 			this.props.isRefreshing || this.props.isConnecting;
 
 		if ( 'connected' === this.props.status ) {
 			removableConnections = serviceConnections.getRemovableConnections( this.props.service.name );
-			ActionButton = RemoveButton;
-			icon = "disconnect";
+			ActionButton = Button;
+			icon = "link-break";
+			borderless = true;
 		} else {
 			ActionButton = Button;
 			primary = true;
@@ -79,6 +82,13 @@ module.exports = React.createClass( {
 			label = this.translate( 'Connect', { context: 'Sharing: Publicize connect pending button label' }  );
 		}
 
-		return <ActionButton primary={ primary } icon={ icon } onClick={ this.onActionClick } className={ classNames( classes ) } disabled={ isPending }>{ label }</ActionButton>;
+		return(
+			<ActionButton borderless={ borderless } primary={ primary } onClick={ this.onActionClick } className={ classNames( classes ) } disabled={ isPending }>
+				{ icon
+					? <Gridicon icon={ icon } />
+				 	: null }
+				{ label }
+			</ActionButton>
+		);
 	}
 } );
