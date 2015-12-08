@@ -10,6 +10,9 @@ import debugModule from 'debug';
  */
 import {
 	TOGGLE_EXPORTER_SECTION,
+	SET_EXPORTER_ADVANCED_SETTING,
+	REQUEST_EXPORTER_ADVANCED_SETTINGS,
+	REPLY_EXPORTER_ADVANCED_SETTINGS,
 	REQUEST_START_EXPORT,
 	REPLY_START_EXPORT,
 	FAIL_EXPORT,
@@ -35,6 +38,11 @@ const initialUIState = Immutable.fromJS( {
 	}
 } );
 
+const initialDataState = Immutable.fromJS( {
+	siteId: null,
+	advancedSettings: null
+} );
+
 /**
  * Reducer for managing the exporter UI
  *
@@ -47,6 +55,11 @@ export function ui( state = initialUIState, action ) {
 		case TOGGLE_EXPORTER_SECTION:
 			debug( 'toggle section', action.section );
 			return state.updateIn( [ 'advancedSettings', action.section, 'isEnabled' ], ( x ) => ( !x ) );
+
+		case SET_EXPORTER_ADVANCED_SETTING:
+			debug( '[TODO] set advanced setting', action );
+			const { section, setting, value } = action;
+			return state.setIn( [ 'advancedSettings', section, setting ], value );
 
 		case REQUEST_START_EXPORT:
 			debug( 'start export' );
@@ -68,6 +81,23 @@ export function ui( state = initialUIState, action ) {
 	return state;
 }
 
+export function data( state = initialDataState, action ) {
+	switch ( action.type ) {
+		case REQUEST_EXPORTER_ADVANCED_SETTINGS:
+			debug( 'request exporter advanced settings' );
+			return state;
+			
+		case REPLY_EXPORTER_ADVANCED_SETTINGS:
+			debug( 'reply exporter advanced settings', action );
+			return state
+				.set( 'siteId', action.siteId )
+				.set( 'advancedSettings', Immutable.fromJS( action.data ) );
+	}
+
+	return state;
+}
+
 export default combineReducers( {
-	ui
+	ui,
+	data
 } );
