@@ -77,7 +77,7 @@ module.exports = React.createClass( {
 				<HeaderCake onClick={ this._goBack }><h1>{ strings.deleteSite }</h1></HeaderCake>
 				<ActionPanel>
 					<ActionPanelBody>
-						<ActionPanelFigure><img src="/calypso/images/delete-site/export-content.png" /></ActionPanelFigure>
+						<ActionPanelFigure><img src="/calypso/images/delete-site/export-content.svg" /></ActionPanelFigure>
 						<ActionPanelTitle>{ strings.exportContentFirst }</ActionPanelTitle>
 						<p>{
 							this.translate( 'Before deleting your site, please take the time to export your content now. ' +

@@ -45,7 +45,7 @@ module.exports = React.createClass( {
 				<HeaderCake onClick={ this._goBack }><h1>{ strings.startOver }</h1></HeaderCake>
 				<ActionPanel>
 					<ActionPanelBody>
-						<ActionPanelFigure inlineBodyText={ true }><img src="/calypso/images/delete-site/start-over.png" /></ActionPanelFigure>
+						<ActionPanelFigure inlineBodyText={ true }><img src="/calypso/images/delete-site/start-over.svg" /></ActionPanelFigure>
 						<ActionPanelTitle>{ strings.startOver }</ActionPanelTitle>
 						<p>{
 							this.translate( 'If you want a site but don\'t want any of the posts and pages you have now, our support ' +
