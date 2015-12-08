@@ -1,51 +1,34 @@
 # Interval
 
-Wraps a component and runs a given action at a given interval while that component is mounted. This component mimics the data poller component, but doesn't require any connecting data store. The interval could be used for any action and was designed with Flux-like actions in mind, _e.g._ for running a background fetch to update a store.
+An interface into a global timer coalescing interval runner.
+
+_**An interface**_ because this component handles registering and un-registering the given `onTick` action with the global runner.
+
+_**timer coalescing**_ because the global runner will run at the same time all of the actions registered for a given interval period. For example, if four actions are registered for running once per minute, they will all run at one point in time every minute instead of having four different run times, each time repeating every minute. This is better for things like battery life because it allows for longer and deeper periods of sleep between actions.
+
+_**interval runner**_ because the global runner will execute the given action every interval on the interval.
+
+This component can be used to easily trigger a polling, looping, or interval action in the background. Such usages could include polling an API endpoint for updates, sweeping over user input such as in the post editor at intervals, or updating an on-screen timer.
+
+It only requires two inputs: an action to perform and an interval between which runs of the action should occur. The action is simply a function and the interval is a named constant representing the interval period. These interval periods are intentionally limited to prevent sprawl of timers.
+
+The action will only be executed as long as the React component is mounted, as the component un-registers the action on unmount. Additionally, the default behavior is to stop executing the action when the browser document is hidden, though this can be overwritten.
 
 ## Usage
 
-## Examples
+```jsx
+import Interval, { EVERY_FIVE_SECONDS, EVERY_MINUTE } from 'lib/interval';
 
-### Poor-man's observable
+<Interval onTick={ doSomething } period={ EVERY_FIVE_SECONDS } />
 
-Somehow a variable inside a component is changing and it isn't clear when it changes or why. Let's watch it for changes...
-
-```js
-import Interval from 'lib/interval';
-
-watchThatThang() {
-	if ( this.oldValue !== this.state.thang ) {
-		console.log( `thang was ${ this.oldValue } but is now ${ this.state.thang }!` );
-		this.oldValue = this.state.thang;
-	}
-}
-
-render: () => (
-	<Interval onTick={ this.watchThatThang } milliseconds="20">
-		<NormalComponentTree />
-	</Interval>
-)
+// Wrapping more components
+<Interval onTick={ fetchNewReaderPosts } period={ EVERY_MINUTE }>
+	<Reader {...readerProps} />
+</Interval>
 ```
 
-### Flux action timer
+## Props
 
-A more useful case for this poller is to fire off Flux-like actions at intervals while a given component is mounted (or in view). In this example, let's build a sound device that plays music but automatically changes the station every fifteen minutes. We don't want to stop changing the station just because the player isn't visible on the screen. In fact, we don't want visibility to have anything to do with this, so we add a couple extra props.
-
-```js
-import Interval from 'lib/interval';
-import { randomizeMusic } from './actions';
-import soundStore from './store';
-
-render: () => (
-	<Interval
-		onTick={ randomizeMusic }
-		leading={ false }
-		pauseWhenHidden={ false }
-		milliseconds={ 15 * MINUTE_IN_MS }
-	>
-		<Provider store={ soundStore }>
-			<SoundLoop autostart={ true } />
-		</Provider>
-	</Interval>
-)
-```
+ - `onTick`: Function to run on interval, _required_
+ - `period`: Constant specifying interval period, _required
+ - `pauseWhenHidden`: _[true]_ Boolean indicating whether or not to stop executing the action when the browser document is hidden from view.
