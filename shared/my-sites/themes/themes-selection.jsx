@@ -12,7 +12,7 @@ import Helper from 'lib/themes/helpers';
 import ThemesSearchCard from './themes-search-card';
 import ThemesData from 'components/data/themes-list-fetcher';
 import ThemesList from 'components/themes-list';
-import ThemesListStore from 'lib/themes/stores/themes-list';
+import { getThemesList, getQueryParams } from 'lib/themes/selectors';
 import StickyPanel from 'components/sticky-panel';
 import analytics from 'analytics';
 import buildUrl from 'lib/mixins/url-search/build-url';
@@ -32,7 +32,8 @@ const ThemesSelection = React.createClass( {
 		setSelectedTheme: PropTypes.func.isRequired,
 		togglePreview: PropTypes.func.isRequired,
 		getOptions: PropTypes.func.isRequired,
-		customize: PropTypes.func.isRequired
+		customize: PropTypes.func.isRequired,
+		getState: PropTypes.func.isRequired
 	},
 
 	getInitialState: function() {
@@ -46,12 +47,13 @@ const ThemesSelection = React.createClass( {
 	},
 
 	recordSearchResultsClick( theme, resultsRank ) {
-		const queryParams = ThemesListStore.getQueryParams();
+		const { getState } = this.props;
+		const queryParams = getQueryParams( getState() );
 		analytics.tracks.recordEvent( 'calypso_themeshowcase_theme_click', {
 			search_term: queryParams.search,
 			theme: theme.id,
 			results_rank: resultsRank + 1,
-			results: ThemesListStore.get(),
+			results: getThemesList( getState() ),
 			page_number: queryParams.page
 		} );
 	},

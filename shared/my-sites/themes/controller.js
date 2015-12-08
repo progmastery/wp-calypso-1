@@ -54,7 +54,7 @@ var controller = {
 						analyticsPageTitle,
 						'Themes'
 					),
-					dispatch: context.reduxStore.dispatch
+					store: context.reduxStore
 				} )
 			),
 			document.getElementById( 'primary' )

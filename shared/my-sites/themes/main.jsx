@@ -33,7 +33,7 @@ var Themes = React.createClass( {
 	propTypes: {
 		siteId: React.PropTypes.string,
 		sites: React.PropTypes.object.isRequired,
-		dispatch: React.PropTypes.func.isRequired,
+		store: React.PropTypes.object.isRequired
 	},
 
 	getInitialState: function() {
@@ -59,7 +59,7 @@ var Themes = React.createClass( {
 			<ActivatingTheme siteId={ this.props.sites.getSelectedSite().ID } >
 				<ThanksModal
 					site={ this.props.sites.getSelectedSite() }
-					clearActivated={ bindActionCreators( Action.clearActivated, this.props.dispatch ) } />
+					clearActivated={ bindActionCreators( Action.clearActivated, this.props.store.dispatch ) } />
 			</ActivatingTheme>
 		);
 	},
@@ -71,7 +71,7 @@ var Themes = React.createClass( {
 	togglePreview: function( theme ) {
 		const site = this.props.sites.getSelectedSite();
 		if ( site.jetpack ) {
-			this.props.dispatch( Action.customize( theme, site ) );
+			this.props.store.dispatch( Action.customize( theme, site ) );
 		} else {
 			const previewUrl = ThemeHelpers.getPreviewUrl( theme, site );
 			this.setState( { showPreview: ! this.state.showPreview, previewUrl: previewUrl, previewingTheme: theme } );
@@ -101,7 +101,8 @@ var Themes = React.createClass( {
 	render: function() {
 		var site = this.props.sites.getSelectedSite(),
 			isJetpack = site.jetpack,
-			jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' );
+			jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' ),
+			dispatch = this.props.store.dispatch;
 
 		if ( isJetpack && jetpackEnabled && ! site.hasJetpackThemes ) {
 			return <JetpackUpgradeMessage site={ site } />;
@@ -125,7 +126,7 @@ var Themes = React.createClass( {
 						<Button primary onClick={ this.setState.bind( this, { showPreview: false },
 							() => {
 								if ( site ) {
-									this.props.dispatch( Action.customize( this.state.previewingTheme, site ) );
+									dispatch( Action.customize( this.state.previewingTheme, site ) );
 								} else {
 									this.setSelectedTheme( 'customize', this.state.previewingTheme );
 								}
@@ -142,18 +143,19 @@ var Themes = React.createClass( {
 						sites={ this.props.sites }
 						setSelectedTheme={ this.setSelectedTheme }
 						togglePreview={ this.togglePreview }
-						getOptions={ partialRight( getButtonOptions, bindActionCreators( Action, this.props.dispatch ), this.setSelectedTheme, this.togglePreview, false ) }
+						getOptions={ partialRight( getButtonOptions, bindActionCreators( Action, dispatch ), this.setSelectedTheme, this.togglePreview, false ) }
 						trackScrollPage={ this.props.trackScrollPage }
 						tier={ this.props.tier }
-						customize={ bindActionCreators( Action.customize, this.props.dispatch ) } />
+						customize={ bindActionCreators( Action.customize, dispatch ) }
+						getState={ this.props.store.getState } />
 				}
 				{ this.isThemeOrActionSet() && <ThemesSiteSelectorModal selectedAction={ this.state.selectedAction }
 					selectedTheme={ this.state.selectedTheme }
 					onHide={ this.setSelectedTheme.bind( null, null, null ) }
-					actions={ bindActionCreators( Action, this.props.dispatch ) }
+					actions={ bindActionCreators( Action, dispatch ) }
 					getOptions={ partialRight(
 						getButtonOptions,
-						bindActionCreators( Action, this.props.dispatch ),
+						bindActionCreators( Action, dispatch ),
 						this.setSelectedTheme,
 						this.togglePreview,
 						true
