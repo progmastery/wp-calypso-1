@@ -54,4 +54,13 @@ module.exports = {
 		},
 		defaultVariation: 'drake'
 	},
+	nuxTrampoline: {
+		datestamp: '20151202',
+		variations: {
+			main: 1,
+			trampoline: 98,
+			notTested: 1
+		},
+		defaultVariation: 'main'
+	}
 };
