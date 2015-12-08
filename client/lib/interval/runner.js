@@ -27,13 +27,8 @@ export const getForTesting = () => state;
 export const resetForTesting = () => {
 	state
 		.get( 'periodTimers' )
-		.forEach( p => {
-			clearTimeout( p );
+		.forEach( clearTimeout );
 
-			// we have to return a truthy value
-			// or immutable.js will stop iterating
-			return true;
-		} );
 	state = initialState;
 };
 
@@ -77,13 +72,11 @@ function hasPeriodActions( period ) {
 
 function executePeriodActions( period ) {
 	getPeriodActions( period )
-		.forEach( a => {
-			a.get( 'onTick' ).call();
+		// since onTick() could explicitly return `false` and
+		// that would terminate the iteration from forEach(),
+		// we need to make sure we don't allow that to happen
+		.forEach( a => a.get( 'onTick' ).call() || true );
 
-			// we have to return a truthy value
-			// or immutable.js will stop iterating
-			return true;
-		} );
 	state = state.setIn( [ 'periodTimers', period ], null );
 
 	scheduleNextRun();
