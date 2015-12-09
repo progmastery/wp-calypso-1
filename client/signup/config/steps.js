@@ -1,5 +1,12 @@
+/**
+ * External dependencies
+ */
+import { current } from 'page';
+
+/**
+* Internal dependencies
+*/
 import stepActions from 'lib/signup/step-actions';
-import { abtest } from 'lib/abtest';
 import i18n from 'lib/mixins/i18n';
 
 module.exports = {
@@ -43,20 +50,10 @@ module.exports = {
 		providesDependencies: [ 'bearer_token', 'username' ]
 	},
 
-	'survey-blog': {
-		stepName: 'survey-blog',
+	survey: {
+		stepName: 'survey',
 		props: {
-			surveySiteType: 'blog',
-			isOneStep: abtest( 'verticalSurvey' ) === 'oneStep'
-		},
-		providesDependencies: [ 'surveySiteType', 'surveyQuestion' ]
-	},
-
-	'survey-site': {
-		stepName: 'survey-site',
-		props: {
-			surveySiteType: 'site',
-			isOneStep: abtest( 'verticalSurvey' ) === 'oneStep'
+			surveySiteType: ( '/start/vert-blog' === current ) ? 'blog' : 'site'
 		},
 		providesDependencies: [ 'surveySiteType', 'surveyQuestion' ]
 	},
