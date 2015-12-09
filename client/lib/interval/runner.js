@@ -1,3 +1,38 @@
+/**
+ *  Global interval action runner
+ *
+ *  This module contains both a store for keeping track of
+ *  actions that need to run at intervals and the code used
+ *  to execute those actions.
+ *
+ *  Note: this is not a Flux or a Redux model and the store
+ *  of actions here isn't intended to be exported higher up
+ *  in the application. This module is a singleton that should
+ *  work concurrently for multiple callers from the `<Interval />`
+ *  component.
+ *
+ *  # Basic operation
+ *
+ *  The store keeps track of actions as they are added and removed.
+ *  Every time an action is added to the store a unique id is
+ *  returned much in the same way as with `setTimeout`. This id
+ *  can be used to reference that particular action for later
+ *  removal.
+ *
+ *      const id = add( EVERY_SECOND, doSomething );
+ *      remove( id );
+ *
+ *  Instead of employing any long-running process to manage
+ *  executing the actions, we instead guarantee that a timeout gets
+ *  set whenever a new action is added.  If there are no actions
+ *  stored for a given interval, that timeout gets cleared to make
+ *  sure we don't run for that period.
+ *
+ *  The scheduling logic all takes place in `scheduleNextRun()`
+ *  which is a safe function to call at any time, meaning that it
+ *  won't overlap timers or break things if we called it needlessly.
+ */
+
 import { fromJS } from 'immutable';
 
 export const EVERY_SECOND = 1000;
@@ -20,9 +55,15 @@ const initialState = fromJS( {
 let state = initialState;
 
 const increment = a => a + 1;
-const push = item => list => list.push( item );
-const pull = id => list => list.filterNot( o => o.get( 'id' ) === id );
+const addToList = item => list => list.push( item );
+const removeFromList = id => list => list.filterNot( o => o.get( 'id' ) === id );
 
+/**
+ * Resets action store and clears timers
+ *
+ * Please don't use in production. This is only
+ * intended to help with testing code.
+ */
 export const resetForTesting = () => {
 	state
 		.get( 'periodTimers' )
@@ -31,6 +72,13 @@ export const resetForTesting = () => {
 	state = initialState;
 };
 
+/**
+ * Adds an action to the queue on the given interval period
+ *
+ * @param period one of the constants defining interval periods
+ * @param {function} onTick the action to run
+ * @returns {number} unique identifier to use to remove action
+ */
 export function add( period, onTick ) {
 	const id = state.get( 'nextId' );
 
@@ -42,17 +90,24 @@ export function add( period, onTick ) {
 
 function storeNewAction( { id, period, onTick } ) {
 	state = state
-		.update( 'actions', push( fromJS( { id, period, onTick } ) ) )
+		.update( 'actions', addToList( fromJS( { id, period, onTick } ) ) )
 		.update( 'nextId', increment );
 }
 
+/**
+ * Removes an action from the queue
+ *
+ * @see add
+ *
+ * @param {number} id identifier returned by add()
+ */
 export function remove( id ) {
-	removeStoredAction( id );
+	removeFromQueue( id );
 	scheduleNextRun();
 }
 
-function removeStoredAction( id ) {
-	state = state.update( 'actions', pull( id ) );
+function removeFromQueue( id ) {
+	state = state.update( 'actions', removeFromList( id ) );
 }
 
 function getPeriodActions( period ) {
@@ -68,14 +123,13 @@ function hasPeriodActions( period ) {
 }
 
 function executePeriodActions( period ) {
-	getPeriodActions( period )
-		// since onTick() could explicitly return `false` and
-		// that would terminate the iteration from forEach(),
-		// we need to make sure we don't allow that to happen
-		.forEach( a => a.get( 'onTick' ).call() || true );
+	// Make sure we don't return `false` or it will
+	// halt the iteration in `forEach`
+	const callAction = a => a.get( 'onTick' ).call() || true;
+
+	getPeriodActions( period ).forEach( callAction );
 
 	state = state.setIn( [ 'periodTimers', period ], null );
-
 	scheduleNextRun();
 }
 
