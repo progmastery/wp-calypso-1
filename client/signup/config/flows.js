@@ -2,7 +2,8 @@
  * External dependencies
  */
 var assign = require( 'lodash/object/assign' ),
-	reject = require( 'lodash/collection/reject' );
+	reject = require( 'lodash/collection/reject' ),
+	page = require( 'page' );
 
 /**
 * Internal dependencies
@@ -151,15 +152,9 @@ function removeUserStepFromFlow( flow ) {
 	} );
 }
 
-function getCurrentFlowNameFromTest() {
-	// Safety check for tests.
-	if ( typeof window === 'undefined' ) {
-		return 'main';
-	}
-
+function getCurrentFlowNameFromTest( currentURL ) {
 	// Assign the user to the verticals survey test if appropriate.
-	const pathname = window.location.pathname;
-	if ( '/start/vert-blog' === pathname || '/start/vert-site' === pathname ) {
+	if ( '/start/vert-blog' === currentURL || '/start/vert-site' === currentURL ) {
 		return ( 'noSurvey' === abtest( 'verticalSurvey' ) ) ? 'main' : 'verticals';
 	}
 
@@ -167,7 +162,7 @@ function getCurrentFlowNameFromTest() {
 }
 
 module.exports = {
-	currentFlowName: getCurrentFlowNameFromTest(),
+	currentFlowName: getCurrentFlowNameFromTest( page.current ),
 
 	defaultFlowName: 'main',
 
