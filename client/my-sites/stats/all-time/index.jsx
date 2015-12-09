@@ -38,6 +38,7 @@ module.exports = React.createClass( {
 		var bestDay = null,
 			infoIcon = this.state.showInfo ? 'info' : 'info-outline',
 			valueClass,
+			bestViews,
 			classes;
 
 		if ( this.props.allTimeList.response['best-views'] && this.props.allTimeList.response['best-views'].day ) {
@@ -58,6 +59,8 @@ module.exports = React.createClass( {
 				'is-non-en': user.data.localeSlug && ( user.data.localeSlug !== 'en' )
 			}
 		];
+
+		bestViews = this.props.allTimeList.response['best-views'] ? this.props.allTimeList.response['best-views'].count : null;
 
 		return (
 			<Card className={ classNames.apply( null, classes ) }>
@@ -113,7 +116,7 @@ module.exports = React.createClass( {
 					<li className="stats-all-time__list-item stats-all-time__best">
 						<Gridicon icon="trophy" size={ 18 } />
 						<span className="stats-all-time__label">{ this.translate( 'Best Views Ever' ) }</span>
-						<span className={ classNames( valueClass, { 'is-low': this.isLow( this.props.allTimeList.response['best-views'].count ) } ) }>{ this.ensureValue( this.props.allTimeList.response['best-views'] ? this.props.allTimeList.response['best-views'].count : null ) }</span>
+						<span className={ classNames( valueClass, { 'is-low': this.isLow( bestViews ) } ) }>{ this.ensureValue( bestViews ) }</span>
 						<span className="stats-all-time__best-day">{ bestDay }</span>
 					</li>
 				</ul>
