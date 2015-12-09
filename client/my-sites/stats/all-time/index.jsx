@@ -30,6 +30,10 @@ module.exports = React.createClass( {
 		return String.fromCharCode( 8211 );
 	},
 
+	isLow: function( value ) {
+    	return ! value || 0 === value
+	},
+
 	render: function() {
 		var bestDay = null,
 			infoIcon = this.state.showInfo ? 'info' : 'info-outline',
@@ -94,22 +98,22 @@ module.exports = React.createClass( {
 					<li className="stats-all-time__list-item stats-all-time__item-posts">
 						<Gridicon icon="posts" size={ 18 } />
 						<span className="stats-all-time__label">{ this.translate( 'Posts' ) }</span>
-						<span className={ classNames( valueClass, { 'is-low': this.props.allTimeList.response.posts === 0 } ) }>{ this.ensureValue( this.props.allTimeList.response.posts ) }</span>
+						<span className={ classNames( valueClass, { 'is-low': this.isLow( this.props.allTimeList.response.posts ) } ) }>{ this.ensureValue( this.props.allTimeList.response.posts ) }</span>
 					</li>
 					<li className="stats-all-time__list-item">
 						<Gridicon icon="visible" size={ 18 } />
 						<span className="stats-all-time__label">{ this.translate( 'Views' ) }</span>
-						<span className={ classNames( valueClass, { 'is-low': this.props.allTimeList.response.views === 0 } ) }>{ this.ensureValue( this.props.allTimeList.response.views ) }</span>
+						<span className={ classNames( valueClass, { 'is-low': this.isLow( this.props.allTimeList.response.views ) } ) }>{ this.ensureValue( this.props.allTimeList.response.views ) }</span>
 					</li>
 					<li className="stats-all-time__list-item">
 						<Gridicon icon="user" size={ 18 } />
 						<span className="stats-all-time__label">{ this.translate( 'Visitors' ) }</span>
-						<span className={ classNames( valueClass, { 'is-low': this.props.allTimeList.response.visitors === 0 } ) }>{ this.ensureValue( this.props.allTimeList.response.visitors ) }</span>
+						<span className={ classNames( valueClass, { 'is-low': this.isLow( this.props.allTimeList.response.visitors ) } ) }>{ this.ensureValue( this.props.allTimeList.response.visitors ) }</span>
 					</li>
 					<li className="stats-all-time__list-item stats-all-time__best">
 						<Gridicon icon="trophy" size={ 18 } />
 						<span className="stats-all-time__label">{ this.translate( 'Best Views Ever' ) }</span>
-						<span className={ classNames( valueClass, { 'is-low': this.props.allTimeList.response['best-views'].count === 0 } ) }>{ this.ensureValue( this.props.allTimeList.response['best-views'] ? this.props.allTimeList.response['best-views'].count : null ) }</span>
+						<span className={ classNames( valueClass, { 'is-low': this.isLow( this.props.allTimeList.response['best-views'].count ) } ) }>{ this.ensureValue( this.props.allTimeList.response['best-views'] ? this.props.allTimeList.response['best-views'].count : null ) }</span>
 						<span className="stats-all-time__best-day">{ bestDay }</span>
 					</li>
 				</ul>
