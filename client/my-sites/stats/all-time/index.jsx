@@ -31,7 +31,7 @@ module.exports = React.createClass( {
 	},
 
 	isLow: function( value ) {
-    	return ! value || 0 === value
+		return ! value || 0 === value
 	},
 
 	render: function() {
