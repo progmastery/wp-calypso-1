@@ -44,8 +44,6 @@ function storeNewAction( { id, period, onTick } ) {
 	state = state
 		.update( 'actions', push( fromJS( { id, period, onTick } ) ) )
 		.update( 'nextId', increment );
-
-	return state.get( 'nextId' );
 }
 
 export function remove( id ) {
