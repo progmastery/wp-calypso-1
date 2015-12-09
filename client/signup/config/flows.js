@@ -10,7 +10,8 @@ var assign = require( 'lodash/object/assign' ),
 */
 var config = require( 'config' ),
 	stepConfig = require( './steps' ),
-	user = require( 'lib/user' )();
+	user = require( 'lib/user' )(),
+	abtest = require( 'lib/abtest' ).abtest;
 
 function getCheckoutDestination( dependencies ) {
 	if ( dependencies.cartItem || dependencies.domainItem ) {
