@@ -70,7 +70,7 @@ const flows = {
 		steps: [ 'survey', 'themes', 'domains', 'plans', 'survey-user' ],
 		destination: getCheckoutDestination,
 		description: 'Categorizing blog signups for Verticals Survey',
-		lastModified: '2015-12-08'
+		lastModified: '2015-12-09'
 	},
 
 	headstart: {

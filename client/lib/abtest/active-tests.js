@@ -17,7 +17,7 @@ module.exports = {
 		defaultVariation: 'singlePurchaseFlow'
 	},
 	verticalSurvey: {
-		datestamp: '20151202',
+		datestamp: '20151209',
 		variations: {
 			noSurvey: 12,
 			oneStep: 44,
