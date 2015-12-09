@@ -1,13 +1,22 @@
 import React, { PropTypes } from 'react';
 import omit from 'lodash/object/omit';
 
-import { add, remove } from './runner';
+import {
+	add, remove,
+	EVERY_SECOND,
+	EVERY_FIVE_SECONDS,
+	EVERY_TEN_SECONDS,
+	EVERY_THIRTY_SECONDS,
+	EVERY_MINUTE
+} from './runner';
 
-export const EVERY_SECOND = 1000;
-export const EVERY_FIVE_SECONDS = 5 * 1000;
-export const EVERY_TEN_SECONDS = 10 * 1000;
-export const EVERY_THIRTY_SECONDS = 30 * 1000;
-export const EVERY_MINUTE = 60 * 1000;
+export {
+	EVERY_SECOND,
+	EVERY_FIVE_SECONDS,
+	EVERY_TEN_SECONDS,
+	EVERY_THIRTY_SECONDS,
+	EVERY_MINUTE
+};
 
 /**
  * Calls a given function on a given interval
