@@ -2,7 +2,8 @@
  * External dependencies
  */
 var assign = require( 'lodash/object/assign' ),
-	reject = require( 'lodash/collection/reject' );
+	reject = require( 'lodash/collection/reject' ),
+	page = require( 'page' );
 
 /**
 * Internal dependencies
@@ -143,14 +144,9 @@ function removeUserStepFromFlow( flow ) {
 	} );
 }
 
-function getCurrentFlowNameFromTest() {
-	// Safety check for tests.
-	if ( typeof window === 'undefined' ) {
-		return 'main';
-	}
-
+function getCurrentFlowNameFromTest( currentURL ) {
 	// Only consider users from the general /start path.
-	if ( '/start' === window.location.pathname && 'dss' === abtest( 'dss' ) ) {
+	if ( '/start' === currentURL && 'dss' === abtest( 'dss' ) ) {
 		return 'dss';
 	}
 
@@ -158,7 +154,7 @@ function getCurrentFlowNameFromTest() {
 }
 
 module.exports = {
-	currentFlowName: getCurrentFlowNameFromTest(),
+	currentFlowName: getCurrentFlowNameFromTest( page.current ),
 
 	defaultFlowName: 'main',
 
