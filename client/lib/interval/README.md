@@ -12,7 +12,7 @@ This component can be used to easily trigger a polling, looping, or interval act
 
 It only requires two inputs: an action to perform and an interval between which runs of the action should occur. The action is simply a function and the interval is a named constant representing the interval period. These interval periods are intentionally limited to prevent sprawl of timers.
 
-The action will only be executed as long as the React component is mounted, as the component un-registers the action on unmount. Additionally, the default behavior is to stop executing the action when the browser document is hidden, though this can be overwritten.
+The action will only be executed as long as the React component is mounted, as the component un-registers the action on unmount. Additionally, the default behavior is to stop executing the action when the browser document is hidden, though this can be overwritten. "Hidden" means that another browser tab is selected or the browser is minimized.
 
 Wrapped components will be transferred all additional props not consumed by the `<Interval />` itself.
 
