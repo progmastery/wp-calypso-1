@@ -39,5 +39,5 @@ const CounterDisplay = counter => <div>{ counter }</div>;
 ## Props
 
  - `onTick`: Function to run on interval, _required_
- - `period`: Constant specifying interval period, _required
+ - `period`: Constant specifying interval period, _required_
  - `pauseWhenHidden`: _[true]_ Boolean indicating whether or not to stop executing the action when the browser document is hidden from view.
