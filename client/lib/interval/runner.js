@@ -90,7 +90,8 @@ function scheduleNextRun() {
 			}
 
 			if ( ! state.get( 'periodTimers' ).get( p ) ) {
-				state = state.setIn( [ 'periodTimers', p ], setTimeout( () => executePeriodActions( p ), p ) );
+				// Note that the second `p` in the call here gets passed as an arg to `executePeriodActions`
+				state = state.setIn( [ 'periodTimers', p ], setTimeout( executePeriodActions, p, p ) );
 			}
 		} );
 }
